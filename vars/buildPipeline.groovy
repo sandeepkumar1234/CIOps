@@ -29,36 +29,12 @@ spec:
         valueFrom:
           secretKeyRef:
             name: jenkins-credentials
-            key: gitReadAccessToken             
-      - name: "GOOGLE_APPLICATION_CREDENTIALS"
-        value: "/var/run/secret/cloud.google.com/service-account.json"
-      - name: NEXUS_USERNAME
-        valueFrom:
-          secretKeyRef:
-            name: jenkins-credentials
-            key: nexusUsername                      
-      - name: NEXUS_PASSWORD
-        valueFrom:
-          secretKeyRef:
-            name: jenkins-credentials
-            key: nexusPassword                      
-      - name: CI_DB_USER
-        valueFrom:
-          secretKeyRef:
-            name: jenkins-credentials
-            key: ciDbUsername                      
-      - name: CI_DB_PWD
-        valueFrom:
-          secretKeyRef:
-            name: jenkins-credentials
-            key: ciDbpassword                      
+            key: gitReadAccessToken                        
     volumeMounts:
       - name: jenkins-docker-cfg
         mountPath: /root/.docker
       - name: kaniko-cache
-        mountPath: /cache  
-      - name: service-account
-        mountPath: /var/run/secret/cloud.google.com        
+        mountPath: /cache     
     resources:
       requests:
         memory: "1792Mi"
@@ -77,14 +53,6 @@ spec:
     persistentVolumeClaim:
       claimName: kaniko-cache-claim
       readOnly: true      
-  - name: service-account
-    projected:
-      sources:
-      - secret:
-          name: jenkins-credentials
-          items:
-            - key: gcpServiceAccount
-              path: service-account.json   
   - name: jenkins-docker-cfg
     projected:
       sources:
